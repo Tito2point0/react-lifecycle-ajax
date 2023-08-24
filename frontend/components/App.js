@@ -8,7 +8,18 @@ export default class App extends React.Component {
   state = {
     todos: [],
     error: '',
+    todoNameInput: '',
   }
+
+ 
+ 
+  onTodoNameInputChange = evt => {
+    const { value } = evt.target
+   this.setState({...this.state, todoNameInput:value })
+  }
+    
+    
+    
   fetchAlltodos = () => {
     axios.get(URL)
       .then(res => {
@@ -30,10 +41,10 @@ export default class App extends React.Component {
             this.state.todos.map(td => {
               return <div key={td.id}>{td.name}</div>
             })
-          }
+          } 
         </div>
         <form id="todoForm">
-          <input type='text' placeholder='Type todo here'></input>
+          <input value={this.state.todoNameInput} onChange={this.onTodoNameInputChange} type='text' placeholder='Type todo here'></input>
           <input type='submit'></input>
           <button> Clear Component</button>
 
