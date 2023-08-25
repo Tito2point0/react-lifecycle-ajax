@@ -17,16 +17,36 @@ export default class App extends React.Component {
     const { value } = evt.target
    this.setState({...this.state, todoNameInput:value })
   }
-    
-    
+
+  resetForm = () => this.setState({...this.state, todoNameInput: ''})
+  
+  setAxiosResponseError = err => {   this.setState({...this.state, error: err.response.data.message })
+
+  }
+
+  postNewTodo = () => {
+    axios.post(URL, { name:this.state.todoNameInput })
+      .then(res => {
+        this.fetchAlltodos() 
+        this.resetForm()
+      })
+      .catch(this.setAxiosResponseError)
+  }
+   
+  onTodoFormSubmit = evt => {
+  evt.preventDefault()
+  this.postNewTodo()
+  }
     
   fetchAlltodos = () => {
     axios.get(URL)
       .then(res => {
-      this.setState({...this.state,  todos: res.data.data })
+        this.setState({ ...this.state, todos: res.data.data })
+        console.log(res)
       })
       .catch(err => {
- this.setState({...this.state, error:err.response.data.message})
+        this.setState({ ...this.state, error: err.response.data.message })
+        console.log(err)
     })
   } 
   componentDidMount() {
@@ -43,7 +63,7 @@ export default class App extends React.Component {
             })
           } 
         </div>
-        <form id="todoForm">
+        <form id="todoForm" onSubmit={this.onTodoFormSubmit}>
           <input value={this.state.todoNameInput} onChange={this.onTodoNameInputChange} type='text' placeholder='Type todo here'></input>
           <input type='submit'></input>
           <button> Clear Component</button>
